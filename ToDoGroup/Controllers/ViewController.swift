@@ -9,8 +9,12 @@ import UIKit
 
 let COLORS = [UIColor("#BF5AF2"), UIColor("#0979EB"), UIColor("#5E5CE6"), UIColor("#E43C32")]
 
-class ViewController: UIViewController {
-    
+//MARK: Add Task Protocol
+protocol AddTaskProtocol: AnyObject{
+    func addTask(tasks: [Task])
+}
+
+class ViewController: UIViewController, AddTaskProtocol {
     
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -25,12 +29,22 @@ class ViewController: UIViewController {
     
     var indexPath: IndexPath?
     
+    func addTask(tasks: [Task]) {
+        guard let indexPath else { return }
+        groups[indexPath.row].tasks = tasks
+        print("---------------------------------------------------")
+        print(indexPath.row)
+        print("---------------------------------------------------")
+        collectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         setup()
     }
+    
 }
 //MARK: Setup
 extension ViewController{
@@ -84,7 +98,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "smallCell", for: indexPath) as! SmallTaskGroupCell
             cell.conf(groups[indexPath.row])
             cell.cancelButton.tag = indexPath.row
+            cell.pinButton.tag = indexPath.row
             cell.cancelButton.addTarget(self, action: #selector(confirmDelete), for: .touchUpInside)
+            cell.pinButton.addTarget(self, action: #selector(pinPressed), for: .touchUpInside)
             
             return cell
         }
@@ -139,6 +155,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         alertController.addAction(confirmAction)
         alertController.addAction(cancelAction)
         present(alertController, animated: true)
+    }
+    //MARK: Target Func - Pin Pressed
+    @objc func pinPressed(_ sender: UIButton){
+        let tempGroup = groups[sender.tag]
+        groups[sender.tag] = groups[0]
+        groups[0] = tempGroup
+        collectionView.reloadData()
     }
 }
 

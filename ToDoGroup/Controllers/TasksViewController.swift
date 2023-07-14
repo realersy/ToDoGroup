@@ -20,7 +20,7 @@ class TasksViewController: UIViewController{
         return collection
     }()
     
-    
+    weak var delegate: AddTaskProtocol?
     var group: TaskGroup
     
     
@@ -56,16 +56,22 @@ class TasksViewController: UIViewController{
                 textField.text != ""
             {
                 
-                let newTask = Task(taskName: textField.text!, isCompleted: false)
-                self.group.tasks.append(newTask)
+                  let newTask = Task(taskName: textField.text!, isCompleted: false)
+                  self.group.tasks.append(newTask)
 
-                self.tasksCollectionView.reloadData()
+                  self.tasksCollectionView.reloadData()
             }
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel){ test in
+            self.delegate?.addTask(tasks: self.group.tasks)
+          
+        }
+
         alertController.addAction(addAction)
         alertController.addAction(cancelAction)
+        print("---------------------------------------------------")
+        print("hello")
+        print("---------------------------------------------------")
         present(alertController, animated: true)
     }
 }
