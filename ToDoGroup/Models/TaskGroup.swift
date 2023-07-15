@@ -10,21 +10,21 @@ import UIKit
 
 var COUNTER = 0
 
-struct TaskGroup{
+struct TaskGroup: Codable{
     let groupName: String
     var tasks: [Task]
-    var groupColor: UIColor
+    var groupColor: String
     
-    init(groupName: String, tasks: [Task], groupColor: UIColor) {
+    init(groupName: String, tasks: [Task], groupColor: String) {
         self.groupName = groupName
         self.tasks = tasks
         self.groupColor = groupColor
         
         if COUNTER == 3{
-            self.groupColor = COLORS[COUNTER]!
+            self.groupColor = COLORS[COUNTER]
             COUNTER = 0
         }else{
-            self.groupColor = COLORS[COUNTER]!
+            self.groupColor = COLORS[COUNTER]
             COUNTER += 1
         }
     }
