@@ -13,7 +13,7 @@ class BigTaskGroupCell: UICollectionViewCell{
     let titleLabel = UILabel()
     let descLabel = UILabel()
     let cancelButton = UIButton()
-    let pinButton = UIButton()
+    //let pinButton = UIButton()
     let progressBar = UIProgressView(progressViewStyle: .bar)
     
     override init(frame: CGRect) {
@@ -31,15 +31,15 @@ class BigTaskGroupCell: UICollectionViewCell{
         layer.cornerRadius = 22
         
         // Pin Button
-        pinButton.setImage(UIImage(named: "pinButton"), for: [])
-        contentView.addSubview(pinButton)
-        pinButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            pinButton.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 12),
-            pinButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 12),
-            pinButton.heightAnchor.constraint(equalToConstant: 20),
-            pinButton.widthAnchor.constraint(equalToConstant: 20)
-        ])
+//        pinButton.setImage(UIImage(named: "pinButton"), for: [])
+//        contentView.addSubview(pinButton)
+//        pinButton.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            pinButton.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 12),
+//            pinButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 12),
+//            pinButton.heightAnchor.constraint(equalToConstant: 20),
+//            pinButton.widthAnchor.constraint(equalToConstant: 20)
+//        ])
         
         // Title Label
         titleLabel.text = "Work"
@@ -50,7 +50,7 @@ class BigTaskGroupCell: UICollectionViewCell{
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: pinButton.trailingAnchor, constant: 12),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             titleLabel.heightAnchor.constraint(equalToConstant: 28)
         ])
@@ -82,17 +82,19 @@ class BigTaskGroupCell: UICollectionViewCell{
         ])
         
         //ProgressBar
-        progressBar.trackTintColor = .black
+        progressBar.trackTintColor = .black.withAlphaComponent(0.2)
         progressBar.progressTintColor = .white
-        progressBar.layer.cornerRadius = 22
+        progressBar.layer.cornerRadius = 2
+        progressBar.clipsToBounds = true
+        progressBar.layer.sublayers?[1].cornerRadius = 2
+        progressBar.subviews[1].clipsToBounds = true
         contentView.addSubview(progressBar)
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             progressBar.topAnchor.constraint(equalTo: descLabel.bottomAnchor),
             progressBar.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 12),
             progressBar.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            progressBar.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-            progressBar.widthAnchor.constraint(equalToConstant: 4)
+            progressBar.heightAnchor.constraint(equalToConstant: 4)
         
         ])
     }

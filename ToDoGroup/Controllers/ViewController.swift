@@ -9,11 +9,6 @@ import UIKit
 
 let COLORS = [UIColor("#BF5AF2"), UIColor("#0979EB"), UIColor("#5E5CE6"), UIColor("#E43C32")]
 
-//MARK: Add Task Protocol
-protocol AddTaskProtocol: AnyObject{
-    func addTask(tasks: [Task])
-}
-
 class ViewController: UIViewController, AddTaskProtocol {
     
     let collectionView: UICollectionView = {
@@ -29,12 +24,9 @@ class ViewController: UIViewController, AddTaskProtocol {
     
     var indexPath: IndexPath?
     
-    func addTask(tasks: [Task]) {
+    func tasksDidChange(tasks: [Task]) {
         guard let indexPath else { return }
         groups[indexPath.row].tasks = tasks
-        print("---------------------------------------------------")
-        print(indexPath.row)
-        print("---------------------------------------------------")
         collectionView.reloadData()
     }
     
@@ -50,6 +42,8 @@ class ViewController: UIViewController, AddTaskProtocol {
 extension ViewController{
     func setup(){
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.alwaysBounceVertical = true
+        collectionView.bounces = true
         
         collectionView.register(BigTaskGroupCell.self, forCellWithReuseIdentifier: "bigCell")
         collectionView.register(SmallTaskGroupCell.self, forCellWithReuseIdentifier: "smallCell")
@@ -112,6 +106,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         self.indexPath = indexPath
         if indexPath.row != groups.count{
             let tasksViewController = TasksViewController(group: groups[indexPath.row])
+            tasksViewController.delegate = self
             navigationController?.pushViewController(tasksViewController, animated: true)
         }
     }
