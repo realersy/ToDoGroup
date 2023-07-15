@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+//MARK: Add Task Protocol
+protocol AddTaskProtocol: AnyObject{
+    func tasksDidChange(tasks: [Task])
+}
+
 class TasksViewController: UIViewController{
     
     //MARK: Properties
@@ -19,7 +24,6 @@ class TasksViewController: UIViewController{
         layout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         return collection
     }()
-    
     weak var delegate: AddTaskProtocol?
     var group: TaskGroup
     
@@ -28,6 +32,7 @@ class TasksViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(pressedAdd))
+
         setup()
     }
     
@@ -58,20 +63,13 @@ class TasksViewController: UIViewController{
                 
                   let newTask = Task(taskName: textField.text!, isCompleted: false)
                   self.group.tasks.append(newTask)
-
+                  self.delegate?.tasksDidChange(tasks: self.group.tasks)
                   self.tasksCollectionView.reloadData()
             }
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel){ test in
-            self.delegate?.addTask(tasks: self.group.tasks)
-          
-        }
-
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alertController.addAction(addAction)
         alertController.addAction(cancelAction)
-        print("---------------------------------------------------")
-        print("hello")
-        print("---------------------------------------------------")
         present(alertController, animated: true)
     }
 }
@@ -80,6 +78,8 @@ class TasksViewController: UIViewController{
 extension TasksViewController{
     func setup(){
         tasksCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        tasksCollectionView.alwaysBounceVertical = true
+        tasksCollectionView.bounces = true
 
         tasksCollectionView.dataSource = self
         tasksCollectionView.delegate = self
@@ -101,33 +101,12 @@ extension TasksViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = tasksCollectionView.dequeueReusableCell(withReuseIdentifier: "taskCell", for: indexPath) as! TaskCell
         
-        cell.deleteTaskButton.tag = indexPath.row
-        cell.isCompletedButton.tag = indexPath.row
-        
-        cell.deleteTaskButton.addTarget(self, action: #selector(pressedDelete), for: .touchUpInside)
-        cell.isCompletedButton.addTarget(self, action: #selector(pressedCompleted), for: .touchUpInside)
-        
-        cell.conf(group.tasks[indexPath.row])
-        cell.backgroundColor = group.groupColor
+        cell.conf(group.tasks[indexPath.row], index: indexPath.row, color: group.groupColor)
+        cell.delegate = self
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return group.tasks.count
-    }
-    //MARK: More OBJC functions
-    @objc func pressedDelete(_ sender: UIButton){
-        group.tasks.remove(at: sender.tag)
-        tasksCollectionView.reloadData()
-    }
-    @objc func pressedCompleted(_ sender: UIButton){
-        
-        if group.tasks[sender.tag].isCompleted {
-            sender.setImage(UIImage(named: "undone"), for: [])
-        }
-        else{
-            sender.setImage(UIImage(named: "done"), for: [])
-        }
-        group.tasks[sender.tag].isCompleted = !group.tasks[sender.tag].isCompleted
     }
 }
 
@@ -137,4 +116,17 @@ extension TasksViewController: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: UIScreen.main.bounds.width-40, height: 60)
     }
+}
+
+extension TasksViewController: TaskCellDelegate{
+    func completionDidChange(index: Int, completed: Bool) {
+        group.tasks[index].isCompleted = completed
+        delegate?.tasksDidChange(tasks: group.tasks)
+    }
+    func deleteDidHappen(index: Int) {
+        group.tasks.remove(at: index)
+        delegate?.tasksDidChange(tasks: group.tasks)
+        tasksCollectionView.reloadData()
+    }
+    
 }
