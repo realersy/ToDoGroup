@@ -27,6 +27,7 @@ class ViewController: UIViewController, AddTaskProtocol {
     func tasksDidChange(tasks: [Task]) {
         guard let indexPath else { return }
         groups[indexPath.row].tasks = tasks
+        writeModel()
         collectionView.reloadData()
     }
     
@@ -35,6 +36,7 @@ class ViewController: UIViewController, AddTaskProtocol {
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         setup()
+        readModel()
     }
     
 }
@@ -126,6 +128,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
                 
                 let newTaskGroup = TaskGroup(groupName: textField.text!, tasks: [], groupColor: "#808080")
                 self.groups.append(newTaskGroup)
+                self.writeModel()
                 self.collectionView.reloadData()
             }
         }
@@ -142,6 +145,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         
         let confirmAction = UIAlertAction(title: "Confirm", style: .default){ [self] test in
             self.groups.remove(at: sender.tag)
+            self.writeModel()
             self.collectionView.reloadData()
             
         }
@@ -156,6 +160,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         let tempGroup = groups[sender.tag]
         groups[sender.tag] = groups[0]
         groups[0] = tempGroup
+        writeModel()
         collectionView.reloadData()
     }
 }

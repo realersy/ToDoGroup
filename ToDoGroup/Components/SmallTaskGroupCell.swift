@@ -97,7 +97,7 @@ class SmallTaskGroupCell: UICollectionViewCell{
         
         
         titleLabel.text = group.groupName
-        backgroundColor = group.groupColor
+        backgroundColor = UIColor(group.groupColor)
         descLabel.text = "Completed \(numOfCompletedTasks) " + "/ \(group.tasks.count)" + " tasks"
     }
 }

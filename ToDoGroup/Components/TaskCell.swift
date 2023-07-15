@@ -96,15 +96,15 @@ class TaskCell: UICollectionViewCell{
         
     }
     
-    func conf(_ task: Task, index: Int, color: UIColor){
+    func conf(_ task: Task, index: Int, color: String){
         self.index = index
         self.isCompleted = task.isCompleted
         let attributes = [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
         let attributedString = NSMutableAttributedString(string: task.taskName, attributes: task.isCompleted ? attributes : [:])
         taskNameLabel.attributedText = attributedString
-        backgroundColor = color
+        backgroundColor = UIColor(color)
         isCompletedButton.setImage(task.isCompleted ? completedImage : incompleteImage, for: [])
-        isCompletedButton.tintColor = color
+        isCompletedButton.tintColor = UIColor(color)
         
         
     }
