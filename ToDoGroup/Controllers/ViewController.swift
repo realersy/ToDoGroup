@@ -82,6 +82,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
                 return cell
             }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addCell", for: indexPath) as! AddTaskGroupCell
+            cell.addButton.addTarget(self, action: #selector(pressedAdd), for: .touchUpInside)
             return cell
             
         } else if indexPath.last == groups.count {
@@ -153,6 +154,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         
         alertController.addAction(confirmAction)
         alertController.addAction(cancelAction)
+        if COUNTER == 0{
+            COUNTER = 4
+        }else{
+            COUNTER -= 1
+        }
         present(alertController, animated: true)
     }
     //MARK: Target Func - Pin Pressed

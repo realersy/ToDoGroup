@@ -82,9 +82,7 @@ class SmallTaskGroupCell: UICollectionViewCell{
         
     }
     
-    @objc func pinButtonPressed(){
-        
-    }
+    @objc func pinButtonPressed(){}
     
     func conf(_ group: TaskGroup){
         

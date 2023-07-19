@@ -15,12 +15,12 @@ protocol TaskCellDelegate: AnyObject{
 
 class TaskCell: UICollectionViewCell{
     
-    private let isCompletedButton = UIButton()
-    private let taskNameLabel = UILabel()
-    private let deleteTaskButton = UIButton()
-    private let buttonBackground = UIView()
-    private var isCompleted: Bool = false
-    private var index: Int = 0
+    let isCompletedButton = UIButton()
+    let taskNameLabel = UILabel()
+    let deleteTaskButton = UIButton()
+    let buttonBackground = UIView()
+    var isCompleted: Bool = false
+    var index: Int = 0
     
     let completedImage = UIImage(named: "done")?.withRenderingMode(.alwaysTemplate)
     let incompleteImage = UIImage(named: "undone")
