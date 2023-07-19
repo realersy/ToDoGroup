@@ -82,9 +82,7 @@ class SmallTaskGroupCell: UICollectionViewCell{
         
     }
     
-    @objc func pinButtonPressed(){
-        
-    }
+    @objc func pinButtonPressed(){}
     
     func conf(_ group: TaskGroup){
         
@@ -97,7 +95,7 @@ class SmallTaskGroupCell: UICollectionViewCell{
         
         
         titleLabel.text = group.groupName
-        backgroundColor = group.groupColor
+        backgroundColor = UIColor(group.groupColor)
         descLabel.text = "Completed \(numOfCompletedTasks) " + "/ \(group.tasks.count)" + " tasks"
     }
 }

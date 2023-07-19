@@ -15,12 +15,12 @@ protocol TaskCellDelegate: AnyObject{
 
 class TaskCell: UICollectionViewCell{
     
-    private let isCompletedButton = UIButton()
-    private let taskNameLabel = UILabel()
-    private let deleteTaskButton = UIButton()
-    private let buttonBackground = UIView()
-    private var isCompleted: Bool = false
-    private var index: Int = 0
+    let isCompletedButton = UIButton()
+    let taskNameLabel = UILabel()
+    let deleteTaskButton = UIButton()
+    let buttonBackground = UIView()
+    var isCompleted: Bool = false
+    var index: Int = 0
     
     let completedImage = UIImage(named: "done")?.withRenderingMode(.alwaysTemplate)
     let incompleteImage = UIImage(named: "undone")
@@ -96,15 +96,15 @@ class TaskCell: UICollectionViewCell{
         
     }
     
-    func conf(_ task: Task, index: Int, color: UIColor){
+    func conf(_ task: Task, index: Int, color: String){
         self.index = index
         self.isCompleted = task.isCompleted
         let attributes = [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
         let attributedString = NSMutableAttributedString(string: task.taskName, attributes: task.isCompleted ? attributes : [:])
         taskNameLabel.attributedText = attributedString
-        backgroundColor = color
+        backgroundColor = UIColor(color)
         isCompletedButton.setImage(task.isCompleted ? completedImage : incompleteImage, for: [])
-        isCompletedButton.tintColor = color
+        isCompletedButton.tintColor = UIColor(color)
         
         
     }

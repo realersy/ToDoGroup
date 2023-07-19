@@ -7,7 +7,7 @@
 
 import UIKit
 
-let COLORS = [UIColor("#BF5AF2"), UIColor("#0979EB"), UIColor("#5E5CE6"), UIColor("#E43C32")]
+let COLORS = ["#BF5AF2", "#0979EB", "#5E5CE6", "#E43C32"]
 
 class ViewController: UIViewController, AddTaskProtocol {
     
@@ -20,13 +20,14 @@ class ViewController: UIViewController, AddTaskProtocol {
     }()
     
     
-    var groups: [TaskGroup] = [TaskGroup(groupName: "Work", tasks: [Task(taskName: "Submit papers", isCompleted: false), Task(taskName: "Do analysis", isCompleted: true)], groupColor: .systemMint), TaskGroup(groupName: "Daily", tasks: [], groupColor: .systemGray), TaskGroup(groupName: "School", tasks: [Task(taskName: "Do homework", isCompleted: false)], groupColor: .systemPink)]
+    var groups: [TaskGroup] = [TaskGroup(groupName: "Work", tasks: [Task(taskName: "Submit papers", isCompleted: false), Task(taskName: "Do analysis", isCompleted: true)], groupColor: "#BF5AF2"), TaskGroup(groupName: "Daily", tasks: [], groupColor: "#0979EB"), TaskGroup(groupName: "School", tasks: [Task(taskName: "Do homework", isCompleted: false)], groupColor: "#5E5CE6")]
     
     var indexPath: IndexPath?
     
     func tasksDidChange(tasks: [Task]) {
         guard let indexPath else { return }
         groups[indexPath.row].tasks = tasks
+        writeModel()
         collectionView.reloadData()
     }
     
@@ -35,6 +36,7 @@ class ViewController: UIViewController, AddTaskProtocol {
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         setup()
+        readModel()
     }
     
 }
@@ -80,6 +82,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
                 return cell
             }
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addCell", for: indexPath) as! AddTaskGroupCell
+            cell.addButton.addTarget(self, action: #selector(pressedAdd), for: .touchUpInside)
             return cell
             
         } else if indexPath.last == groups.count {
@@ -124,8 +127,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
                 textField.text != ""
             {
                 
-                let newTaskGroup = TaskGroup(groupName: textField.text!, tasks: [], groupColor: .gray)
+                let newTaskGroup = TaskGroup(groupName: textField.text!, tasks: [], groupColor: "#808080")
                 self.groups.append(newTaskGroup)
+                self.writeModel()
                 self.collectionView.reloadData()
             }
         }
@@ -142,6 +146,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         
         let confirmAction = UIAlertAction(title: "Confirm", style: .default){ [self] test in
             self.groups.remove(at: sender.tag)
+            self.writeModel()
             self.collectionView.reloadData()
             
         }
@@ -149,6 +154,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         
         alertController.addAction(confirmAction)
         alertController.addAction(cancelAction)
+        if COUNTER == 0{
+            COUNTER = 4
+        }else{
+            COUNTER -= 1
+        }
         present(alertController, animated: true)
     }
     //MARK: Target Func - Pin Pressed
@@ -156,6 +166,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         let tempGroup = groups[sender.tag]
         groups[sender.tag] = groups[0]
         groups[0] = tempGroup
+        writeModel()
         collectionView.reloadData()
     }
 }
@@ -174,3 +185,40 @@ extension ViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
+//MARK: Saving to file
+extension ViewController{
+    func writeModel(){
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("cannot access documents directory")
+            return
+        }
+        let fileURL = documentsURL.appendingPathComponent("saves")
+
+        do {
+            let data = try JSONEncoder().encode(groups)
+            try data.write(to: fileURL)
+
+        } catch {
+            print("cannot write to file")
+        }
+    }
+    
+    func readModel() {
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("cannot access documents directory")
+            return
+        }
+
+        let fileURL = documentsURL.appendingPathComponent("saves")
+        do {
+            let data = try Data(contentsOf: fileURL)
+            let object = try JSONDecoder().decode([TaskGroup].self, from: data)
+            groups = object
+            collectionView.reloadData()
+
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+}

@@ -109,7 +109,7 @@ class BigTaskGroupCell: UICollectionViewCell{
         }
         
         titleLabel.text = group.groupName
-        backgroundColor = group.groupColor
+        backgroundColor = UIColor(group.groupColor)
         descLabel.text = "Completed \(numOfCompletedTasks) " + "/ \(group.tasks.count)" + " tasks"
         let ratio = Float(numOfCompletedTasks) / Float(group.tasks.count)
         progressBar.setProgress(ratio, animated: false)

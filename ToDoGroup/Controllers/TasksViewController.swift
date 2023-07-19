@@ -128,5 +128,4 @@ extension TasksViewController: TaskCellDelegate{
         delegate?.tasksDidChange(tasks: group.tasks)
         tasksCollectionView.reloadData()
     }
-    
 }
